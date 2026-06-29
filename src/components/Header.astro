@@ -1,0 +1,72 @@
+---
+import { SITE_AUTHOR } from '../consts';
+import HeaderLink from './HeaderLink.astro';
+import ProfilePhoto from './ProfilePhoto.astro';
+---
+
+<header class="topbar">
+	<nav aria-label="主导航">
+		<a class="brand" href="/" aria-label={`${SITE_AUTHOR}的主页`}>
+			<ProfilePhoto size={28} />
+			<span>{SITE_AUTHOR}的主页</span>
+		</a>
+		<div class="internal-links">
+			<HeaderLink href="/essays">随笔</HeaderLink>
+			<HeaderLink href="/books">读书</HeaderLink>
+			<HeaderLink href="/photos">照片</HeaderLink>
+			<HeaderLink href="/now">Now</HeaderLink>
+			<HeaderLink href="/about">关于</HeaderLink>
+		</div>
+	</nav>
+</header>
+
+<style>
+	.topbar {
+		position: sticky;
+		top: 0;
+		z-index: 20;
+		border-bottom: 1px solid rgba(231, 231, 228, 0.78);
+		background: rgba(255, 255, 255, 0.94);
+		backdrop-filter: blur(10px);
+	}
+	nav {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		min-height: 46px;
+		padding: 0 14px;
+		gap: 1.5rem;
+	}
+	.brand {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.55rem;
+		color: var(--ink);
+		font-size: 0.88rem;
+		font-weight: 520;
+		text-decoration: none;
+		white-space: nowrap;
+	}
+	.internal-links { display: flex; align-items: center; gap: 0.25rem; }
+	.internal-links :global(a) {
+		padding: 0.38rem 0.55rem;
+		border-radius: 4px;
+		color: var(--muted);
+		font-size: 0.79rem;
+		white-space: nowrap;
+	}
+	.internal-links :global(a:hover), .internal-links :global(a.active) {
+		background: var(--paper-deep);
+		color: var(--ink);
+	}
+	@media (max-width: 620px) {
+		nav { align-items: stretch; flex-direction: column; gap: 0; padding: 8px 0 0; }
+		.brand { padding: 0 12px 8px; }
+		.internal-links {
+			overflow-x: auto;
+			padding: 0 8px 7px;
+			scrollbar-width: none;
+		}
+		.internal-links::-webkit-scrollbar { display: none; }
+	}
+</style>

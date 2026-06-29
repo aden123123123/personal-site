@@ -1,0 +1,25 @@
+---
+import { type CollectionEntry, getCollection, render } from 'astro:content';
+import EntryLayout from '../../layouts/EntryLayout.astro';
+
+// Astro 在构建时为每篇随笔生成一个静态页面，部署后不需要数据库。
+export async function getStaticPaths() {
+	const essays = await getCollection('essays', ({ data }) => !data.draft);
+	return essays.map((essay) => ({ params: { slug: essay.id }, props: essay }));
+}
+type Props = CollectionEntry<'essays'>;
+const essay = Astro.props;
+const { Content } = await render(essay);
+---
+
+<EntryLayout
+	title={essay.data.title}
+	description={essay.data.description}
+	pubDate={essay.data.pubDate}
+	eyebrow="Essay · 随笔"
+	meta={essay.data.tags.join(' · ')}
+	backHref="/essays"
+	backLabel="随笔"
+>
+	<Content />
+</EntryLayout>

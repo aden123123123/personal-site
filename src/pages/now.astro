@@ -1,0 +1,12 @@
+---
+import { getEntry, render } from 'astro:content';
+import ProsePageLayout from '../layouts/ProsePageLayout.astro';
+
+const page = await getEntry('pages', 'now');
+if (!page) throw new Error('找不到 now.md');
+const { Content } = await render(page);
+---
+
+<ProsePageLayout title={page.data.title} description={page.data.description} eyebrow="Now · 此刻" updatedDate={page.data.updatedDate} icon="🌱">
+	<Content />
+</ProsePageLayout>

@@ -1,0 +1,28 @@
+---
+import { SITE_AUTHOR } from '../consts';
+const today = new Date();
+---
+
+<footer>
+	<div class="footer-inner">
+		<p>© {today.getFullYear()} {SITE_AUTHOR}</p>
+		<p>生活不是等待被总结，而是值得被记录。</p>
+	</div>
+</footer>
+
+<style>
+	footer {
+		width: min(calc(100% - 48px), var(--page-width));
+		margin: 0 auto;
+		padding: 1.5rem 0 2.5rem;
+		border-top: 1px solid var(--line);
+		color: var(--muted-light);
+		font-size: 0.76rem;
+	}
+	.footer-inner { display: flex; justify-content: space-between; gap: 1rem; }
+	footer p { margin: 0; }
+	@media (max-width: 620px) {
+		footer { width: min(calc(100% - 32px), var(--page-width)); }
+		.footer-inner { flex-direction: column; gap: 0.35rem; }
+	}
+</style>

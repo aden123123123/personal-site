@@ -1,0 +1,22 @@
+---
+import { getCollection } from 'astro:content';
+import ContentList from '../../components/ContentList.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+
+const essays = (await getCollection('essays', ({ data }) => !data.draft)).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+const items = essays.map((essay) => ({
+	href: `/essays/${essay.id}/`,
+	title: essay.data.title,
+	description: essay.data.description,
+	date: essay.data.pubDate,
+	label: essay.data.tags[0],
+}));
+---
+
+<SiteLayout title="随笔" description="关于生活、时间与自我成长的文字。">
+	<PageHeader icon="✍️" eyebrow={`${essays.length} 篇文字`} title="随笔" description="道理想通了就不值钱了，所以这里全是值钱的。" />
+	<ContentList {items} icon="✍️" />
+</SiteLayout>

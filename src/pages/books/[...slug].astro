@@ -1,0 +1,27 @@
+---
+import { type CollectionEntry, getCollection, render } from 'astro:content';
+import EntryLayout from '../../layouts/EntryLayout.astro';
+
+// 每本书也由 Markdown 独立生成页面，字段格式由 content.config.ts 统一检查。
+export async function getStaticPaths() {
+	const books = await getCollection('books', ({ data }) => !data.draft);
+	return books.map((book) => ({ params: { slug: book.id }, props: book }));
+}
+type Props = CollectionEntry<'books'>;
+const book = Astro.props;
+const { Content } = await render(book);
+const stars = book.data.rating ? `${'★'.repeat(book.data.rating)}${'☆'.repeat(5 - book.data.rating)}` : '';
+const meta = [book.data.author, book.data.status, stars].filter(Boolean).join(' · ');
+---
+
+<EntryLayout
+	title={`《${book.data.title}》`}
+	description={book.data.description}
+	pubDate={book.data.pubDate}
+	eyebrow="Reading · 读书"
+	{meta}
+	backHref="/books"
+	backLabel="读书"
+>
+	<Content />
+</EntryLayout>

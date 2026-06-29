@@ -1,0 +1,30 @@
+---
+interface Props {
+	eyebrow: string;
+	title: string;
+	description: string;
+	icon?: string;
+}
+const { eyebrow, title, description, icon = '📄' } = Astro.props;
+---
+
+<header class="page-header">
+	<div class="page-icon" aria-hidden="true">{icon}</div>
+	<h1>{title}</h1>
+	<div class="page-callout">
+		<p>{description}</p>
+		<p class="eyebrow">{eyebrow}</p>
+	</div>
+</header>
+
+<style>
+	.page-header { max-width: var(--reading-width); margin-bottom: 2.75rem; }
+	.page-icon { margin-bottom: 1rem; font-size: 4.3rem; line-height: 1; }
+	.page-header h1 { margin-bottom: 1.25rem; }
+	.page-callout { padding: 1rem 1.15rem; border-radius: 4px; background: var(--accent-soft); }
+	.page-callout p:first-child { margin: 0 0 0.65rem; line-height: 1.7; }
+	@media (max-width: 620px) {
+		.page-header { margin-bottom: 2.25rem; }
+		.page-icon { font-size: 3.5rem; }
+	}
+</style>

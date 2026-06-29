@@ -1,0 +1,22 @@
+---
+import { getCollection } from 'astro:content';
+import ContentList from '../../components/ContentList.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+
+const books = (await getCollection('books', ({ data }) => !data.draft)).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+const items = books.map((book) => ({
+	href: `/books/${book.id}/`,
+	title: `《${book.data.title}》`,
+	description: book.data.description,
+	date: book.data.pubDate,
+	label: `${book.data.status} · ${book.data.author}`,
+}));
+---
+
+<SiteLayout title="读书" description="读过的书，以及它们留下的回声。">
+	<PageHeader icon="📚" eyebrow={`${books.length} 本书`} title="读书" description="如果看书是为了少走弯路，那么弯路也没少走。" />
+	<ContentList {items} icon="📚" />
+</SiteLayout>

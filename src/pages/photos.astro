@@ -1,0 +1,33 @@
+---
+import { Image } from 'astro:assets';
+import PageHeader from '../components/PageHeader.astro';
+import { photos } from '../data/photos';
+import SiteLayout from '../layouts/SiteLayout.astro';
+---
+
+<SiteLayout title="照片" description="我在大连遇见的海、桥与风。" wide>
+	<PageHeader icon="📷" eyebrow={`${photos.length} 个瞬间`} title="照片" description="拍照是为了证明生活不只有屏幕，虽然最后还是放进了屏幕。" />
+	<div class="photo-grid">
+		{photos.map((photo, index) => (
+			<figure class:list={{ featured: index === 0 }}>
+				<Image src={photo.src} alt={photo.alt} widths={[480, 720, 960]} sizes={index === 0 ? '(max-width: 760px) 100vw, 960px' : '(max-width: 760px) 100vw, 520px'} quality={70} loading={index === 0 ? 'eager' : 'lazy'} />
+				<figcaption><span>{photo.caption}</span><time>{photo.date}</time></figcaption>
+			</figure>
+		))}
+	</div>
+</SiteLayout>
+
+<style>
+	.photo-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem 0.9rem; }
+	figure { margin: 0; }
+	figure.featured { grid-column: 1 / -1; }
+	figure :global(img) { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 3px; }
+	figure.featured :global(img) { aspect-ratio: 2 / 1; }
+	figcaption { display: flex; justify-content: space-between; gap: 1rem; margin-top: 0.55rem; color: var(--muted); font-size: 0.72rem; }
+	figcaption time { color: var(--muted-light); }
+	@media (max-width: 640px) {
+		.photo-grid { grid-template-columns: 1fr; }
+		figure.featured { grid-column: auto; }
+		figure.featured :global(img), figure :global(img) { aspect-ratio: 4 / 3; }
+	}
+</style>

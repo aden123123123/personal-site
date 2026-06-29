@@ -1,0 +1,51 @@
+---
+import FormattedDate from '../components/FormattedDate.astro';
+import SiteLayout from './SiteLayout.astro';
+
+interface Props {
+	title: string;
+	description: string;
+	pubDate: Date;
+	eyebrow: string;
+	meta?: string;
+	backHref: string;
+	backLabel: string;
+}
+const { title, description, pubDate, eyebrow, meta, backHref, backLabel } = Astro.props;
+const icon = backHref === '/books' ? '📚' : '✍️';
+---
+
+<SiteLayout title={title} description={description}>
+	<article class="entry">
+		<header class="entry-header">
+			<a class="back-link" href={backHref}>← {backLabel}</a>
+			<div class="entry-icon" aria-hidden="true">{icon}</div>
+			<h1>{title}</h1>
+			<div class="entry-callout">
+				<p>{description}</p>
+				<div class="entry-meta">
+					<span>{eyebrow}</span>
+					<FormattedDate date={pubDate} />
+					{meta && <span>{meta}</span>}
+				</div>
+			</div>
+		</header>
+		<div class="prose"><slot /></div>
+		<footer class="entry-footer"><a href={backHref}>← 回到{backLabel}</a></footer>
+	</article>
+</SiteLayout>
+
+<style>
+	.entry { max-width: var(--reading-width); margin-inline: auto; }
+	.entry-header { margin-bottom: 2.75rem; }
+	.back-link { display: inline-block; margin-bottom: 2.8rem; color: var(--muted); font-size: 0.78rem; text-decoration: none; }
+	.entry-icon { margin-bottom: 1rem; font-size: 4rem; line-height: 1; }
+	.entry-header h1 { margin-bottom: 1.25rem; }
+	.entry-callout { padding: 1rem 1.15rem; border-radius: 4px; background: var(--accent-soft); }
+	.entry-callout > p { margin: 0 0 0.75rem; line-height: 1.65; }
+	.entry-meta { display: flex; flex-wrap: wrap; gap: 0.35rem 0.85rem; color: var(--muted); font-size: 0.72rem; }
+	.entry-meta > * + *::before { margin-right: 0.85rem; content: '·'; }
+	.entry-footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--line); font-size: 0.78rem; }
+	.entry-footer a { color: var(--muted); text-decoration: none; }
+	.entry-footer a:hover, .back-link:hover { color: var(--accent); }
+</style>

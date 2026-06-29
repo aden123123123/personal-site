@@ -1,0 +1,184 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import ContentList from '../components/ContentList.astro';
+import ProfilePhoto from '../components/ProfilePhoto.astro';
+import { SITE_AUTHOR, SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import { photos } from '../data/photos';
+import SiteLayout from '../layouts/SiteLayout.astro';
+
+const essays = (await getCollection('essays', ({ data }) => !data.draft)).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+const books = (await getCollection('books', ({ data }) => !data.draft)).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+
+const essayItems = essays.slice(0, 4).map((entry) => ({
+	href: `/essays/${entry.id}/`,
+	title: entry.data.title,
+	description: entry.data.description,
+	date: entry.data.pubDate,
+	label: entry.data.tags[0],
+}));
+const bookItems = books.slice(0, 3).map((entry) => ({
+	href: `/books/${entry.id}/`,
+	title: `《${entry.data.title}》`,
+	description: entry.data.description,
+	date: entry.data.pubDate,
+	label: entry.data.status,
+}));
+const photoPreview = photos.slice(0, 3);
+---
+
+<SiteLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
+	<section class="profile" aria-labelledby="profile-title">
+		<ProfilePhoto class="profile-image" size={124} alt="杨林的个人照片" />
+		<h1 id="profile-title">{SITE_AUTHOR}的主页</h1>
+
+		<div class="identity-card">
+			<div class="callout-icon" aria-hidden="true">👋</div>
+			<div>
+				<p><strong>{SITE_AUTHOR} Yang Lin</strong></p>
+				<p>东北财经大学 · 金融科技硕士研究生 · 生活在大连</p>
+				<p>我关心金融、价值投资，也喜欢阅读、冥想、更关心一个普通人怎样认真生活。</p>
+				<p class="last-updated">Last updated: 2026-06-28</p>
+			</div>
+		</div>
+	</section>
+
+	<section class="quick-grid" aria-label="快速入口">
+		<div>
+			<h2>开始阅读</h2>
+			<ul>
+				<li><a href="/essays">✍️ 随笔</a> — 生活与思考</li>
+				<li><a href="/books">📚 读书</a> — 读过的书与留下的回声</li>
+				<li><a href="/photos">📷 照片</a> — 一些让我停下来的moment</li>
+			</ul>
+		</div>
+		<div>
+			<h2>关于与近况</h2>
+			<ul>
+				<li><a href="/about">👋 关于我</a> — 一份不急着说完的介绍</li>
+				<li><a href="/now">🌱 Now</a> — 此刻正在做的事情</li>
+			</ul>
+		</div>
+	</section>
+
+	<hr class="divider" />
+
+	<section class="home-section" aria-labelledby="essays-title">
+		<div class="section-heading">
+			<h2 id="essays-title">最近写下</h2>
+			<a href="/essays">全部随笔 →</a>
+		</div>
+		<ContentList items={essayItems} icon="✍️" />
+	</section>
+
+	<section class="home-section" aria-labelledby="books-title">
+		<div class="section-heading">
+			<h2 id="books-title">最近在读</h2>
+			<a href="/books">读书记录 →</a>
+		</div>
+		<ContentList items={bookItems} icon="📚" />
+	</section>
+
+	<a class="now-callout" href="/now">
+		<span aria-hidden="true">🌱</span>
+		<span><strong>此刻，我在做什么？</strong><br />备考 CPA 会计，准备毕业答辩，也尽量给冥想、阅读和当下留一点时间。</span>
+		<span class="arrow" aria-hidden="true">→</span>
+	</a>
+
+	<section class="home-section" aria-labelledby="photos-title">
+		<div class="section-heading">
+			<h2 id="photos-title">一些照片</h2>
+			<a href="/photos">打开相册 →</a>
+		</div>
+		<div class="photo-preview">
+			{photoPreview.map((photo) => (
+				<figure>
+					<Image src={photo.src} alt={photo.alt} widths={[360, 640]} sizes="(max-width: 720px) 100vw, 33vw" quality={68} />
+					<figcaption>{photo.caption}</figcaption>
+				</figure>
+			))}
+		</div>
+	</section>
+
+	<section class="home-section" aria-labelledby="navigation-title">
+		<h2 id="navigation-title">Navigation</h2>
+		<div class="page-links">
+			<a href="/essays"><span>✍️</span><div><strong>随笔</strong><small>Essays</small></div></a>
+			<a href="/books"><span>📚</span><div><strong>读书</strong><small>Books</small></div></a>
+			<a href="/photos"><span>📷</span><div><strong>照片</strong><small>Photos</small></div></a>
+			<a href="/now"><span>🌱</span><div><strong>此刻</strong><small>Now</small></div></a>
+			<a href="/about"><span>👋</span><div><strong>关于</strong><small>About</small></div></a>
+		</div>
+	</section>
+
+	<section class="after-hours" aria-labelledby="after-hours-title">
+		<h2 id="after-hours-title">After Hours</h2>
+		<blockquote>读书、冥想、吃喝，把该做的事做好。</blockquote>
+	</section>
+</SiteLayout>
+
+<style>
+	.profile { max-width: var(--page-width); }
+	.profile :global(.profile-image) { margin: 0 0 1.35rem 8px; }
+	.profile h1 { margin: 0 0 1.25rem 0; padding-inline: 8px; font-size: 2.1rem; }
+	.identity-card {
+		display: grid;
+		grid-template-columns: auto 1fr;
+		gap: 0.8rem;
+		padding: 1.2rem 1rem;
+		border-radius: 4px;
+		background: var(--accent-soft);
+		font-size: 0.88rem;
+	}
+	.identity-card > div:last-child { min-width: 0; overflow-wrap: anywhere; }
+	.callout-icon { font-size: 1.1rem; }
+	.identity-card p { margin: 0 0 0.75rem; line-height: 1.55; }
+	.identity-card p:last-child { margin-bottom: 0; }
+	.last-updated { color: var(--muted); font-size: 0.76rem; }
+	.quick-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3rem; margin: 2.5rem 0; }
+	.quick-grid h2 { margin-bottom: 0.8rem; font-size: 1.02rem; }
+	.quick-grid ul { margin: 0; padding-left: 1.2rem; }
+	.quick-grid li { margin-bottom: 0.55rem; color: var(--muted); font-size: 0.82rem; line-height: 1.55; }
+	.divider { margin: 2.5rem 0; border: 0; border-top: 1px solid var(--line); }
+	.home-section { margin-top: 2.75rem; }
+	.section-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 0.8rem; }
+	.section-heading h2, .home-section > h2, .after-hours h2 { margin: 0; font-size: 1.32rem; }
+	.section-heading a { font-size: 0.74rem; }
+	.now-callout {
+		display: grid;
+		grid-template-columns: auto 1fr auto;
+		align-items: center;
+		gap: 0.9rem;
+		margin-top: 2.75rem;
+		padding: 1rem 1.15rem;
+		border-radius: 4px;
+		background: var(--warm-soft);
+		color: var(--ink);
+		font-size: 0.84rem;
+		line-height: 1.55;
+		text-decoration: none;
+	}
+	.now-callout > span:first-child { font-size: 1.2rem; }
+	.now-callout .arrow { color: var(--muted); }
+	.photo-preview { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; }
+	.photo-preview figure { margin: 0; }
+	.photo-preview :global(img) { display: block; width: 100%; aspect-ratio: 4 / 3; border-radius: 3px; object-fit: cover; }
+	.photo-preview figcaption { margin-top: 0.4rem; color: var(--muted); font-size: 0.7rem; }
+	.page-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.4rem 0.75rem; margin-top: 0.8rem; }
+	.page-links a { display: flex; align-items: center; gap: 0.7rem; min-height: 54px; padding: 0.55rem 0.7rem; border-radius: 4px; color: var(--ink); text-decoration: none; }
+	.page-links a:hover { background: var(--paper-deep); }
+	.page-links a > span { font-size: 1.25rem; }
+	.page-links strong { display: block; font-size: 0.88rem; font-weight: 560; }
+	.page-links small { display: block; margin-top: 0.1rem; color: var(--muted-light); font-size: 0.68rem; }
+	.after-hours { margin-top: 2.75rem; }
+	.after-hours blockquote { margin: 0.8rem 0 0; padding: 0.25rem 0 0.25rem 0.9rem; border-left: 3px solid var(--ink); font-size: 0.9rem; }
+	@media (max-width: 700px) {
+		.quick-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+		.photo-preview { grid-template-columns: 1fr; gap: 1rem; }
+		.page-links { grid-template-columns: 1fr; }
+	}
+</style>

@@ -1,0 +1,38 @@
+---
+import { Image } from 'astro:assets';
+import Profile from '../assets/profile.jpg';
+
+interface Props {
+	size?: number;
+	alt?: string;
+	class?: string;
+}
+
+const { size = 124, alt = '', class: className } = Astro.props;
+---
+
+<!-- 头像使用原图做网页裁切，不修改或 AI 重绘人物面部。 -->
+<span class:list={['profile-photo', className]} style={`--avatar-size: ${size}px`}>
+	<Image src={Profile} alt={alt} widths={[160, 320, 720]} sizes={`${size * 4}px`} quality={75} />
+</span>
+
+<style>
+	.profile-photo {
+		position: relative;
+		display: block;
+		width: var(--avatar-size);
+		height: var(--avatar-size);
+		overflow: hidden;
+		border-radius: 5px;
+		background: #e9ecef;
+	}
+	.profile-photo :global(img) {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: auto;
+		max-width: none;
+		height: 284%;
+		transform: translate(-56%, -55%);
+	}
+</style>
