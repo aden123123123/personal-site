@@ -6,7 +6,7 @@ import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
-	// 上线后把这里改成你在 Vercel 获得的正式网址。
-	site: 'https://personal-site.vercel.app',
+	site: 'https://aden123123123.github.io',
+	base: '/personal-site',
 	integrations: [mdx(), sitemap()],
 });
